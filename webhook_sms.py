@@ -31,8 +31,8 @@ def webhook():
         mensagem_encoded = urllib.parse.quote(mensagem)
 
         # Configuração da API CallMeBot
-        phone = "5511954217985"  # Número configurado na API
-        apikey = "5483609"       # Sua chave API
+        phone = "5511917112598"  # Número configurado na API
+        apikey = "2998637"       # Sua chave API
 
         api_url = (
             f"https://api.callmebot.com/whatsapp.php?"
