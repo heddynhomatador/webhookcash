@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: webhook-sms
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python webhook_sms.py"
+    autoDeploy: true
